@@ -1,0 +1,27 @@
+{
+  "name": "msv-config",
+  "version": "0.0.1",
+  "description": "Config container for msv",
+  "main": "dist/config.js",
+  "types": "types.d.ts",
+  "devDependencies": {
+    "@types/node": "8.0.7",
+    "typescript": "2.4.1"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smbwain/msv-config.git"
+  },
+  "keywords": [
+    "msv", "config"
+  ],
+  "author": "Roman Ditchuk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smbwain/msv-config/issues"
+  },
+  "homepage": "https://github.com/smbwain/msv-config#readme"
+}
