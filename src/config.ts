@@ -1,9 +1,9 @@
 
-import {Config as ConfigInterface, ConfigData, ConfigRowData, ConfigEnv} from '../types';
+import {ConfigInterface, ConfigData, ConfigRowData} from '../types';
 
 export default class Config implements ConfigInterface {
 
-    private _data : ConfigData;
+    protected _data : ConfigData;
 
     constructor({data = {}} : {data? : ConfigData} = {}) {
         this._data = data;

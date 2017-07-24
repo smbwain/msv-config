@@ -1,10 +1,10 @@
 
-export interface Config {
-    merge(config : Config) : Config;
-    mergeObject(raw : ConfigRowData, options? : {addPrefix? : string}) : Config;
+export interface ConfigInterface {
+    merge(config : ConfigInterface) : ConfigInterface;
+    mergeObject(raw : ConfigRowData, options? : {addPrefix? : string}) : ConfigInterface;
     get(confName : string, defaultValue? : string) : string;
     has(confName : string) : boolean;
-    sub(prefix : string) : Config;
+    sub(prefix : string) : ConfigInterface;
 }
 
 export type ConfigRowData = {
@@ -19,14 +19,14 @@ export type ConfigEnv = {
     [envKey : string] : string
 };
 
-export function config(object? : ConfigRowData) : Config;
-export function configFromString(str : string, type : string) : Config;
-export function configFromFileSync(filename : string, type? : string) : Config;
-export function loadFromEnv(options? : {
+export function config(object? : ConfigRowData) : ConfigInterface;
+export function configFromString(str : string, type : string) : ConfigInterface;
+export function configFromFileSync(filename : string, type? : string) : ConfigInterface;
+export function configFromEnv(options? : {
     varNamePrefix? : string,
     env?: ConfigEnv
-}) : Config;
+}) : ConfigInterface;
 export function basicConfig(options? : {
     envVarNamePrefix? : string,
     env? : ConfigEnv
-}) : Config;
+}) : ConfigInterface;
