@@ -2,6 +2,7 @@ msv-config
 ==========
 
 This module implements simple config container for configuration which could be read from file, environment variables or somewhere else.
+
 This library is a part of msv project.
 
 How to use
@@ -34,7 +35,7 @@ import {configFromFileSync} from 'msv-config';
 const conf = configFromFileSync('./conf.yaml');
 ```
 
-Config could be overwritten with environment variables
+Config could be read with environment variables
 
 ```bash
 APP_DB_USER=root node myApp
@@ -69,7 +70,8 @@ const dbConf = conf.sub('db');
 dbConf.get('user')
 ```
 
-To be compatible with environment variables, all config values are strings.
+To be compatible with environment variables, config variable names are case insensitive config values are always strings.
+
 So convert them yourself if needed.
 
 ```js
@@ -77,8 +79,6 @@ server.listen(
     parseInt(config.get('listen.port'))
 );
 ```
-
-(Also, it's good to know, that config variable names are case insensitive)
 
 As you could see few snippets ago, configs could be merged
 
@@ -121,6 +121,7 @@ Load config from string. At the moment _type_ could be: json or yaml.
 #### configFromFileSync(filename : string, type? : string) : Config
 
 Load config from file (synchronously! which should be ok, as you read your config once on the app start).
+
 At the moment, _type_ could be: json or yaml. If _type_ isn't passed, it tries to get type from file extension.
 
 
@@ -136,9 +137,11 @@ configFromEnv({
 }) : Config;
 ```
 
-Read config from environment variables
-_varNamePrefix_ is prefix which used with your env variables names. By default it's "APP_"
-You could also replace your source instead of nodes process.env, if needed.
+Read config from environment variables.
+
+_varNamePrefix_ is prefix which used with your env variables names. By default it's "APP_".
+
+You could also pass your source instead of node's process.env, if needed.
  
 So, if you want to have config:
 ```json
@@ -171,8 +174,8 @@ configFromEnv({
 
 Create config by merging:
 
-* file <NODE_CONFIG_DIR>/default.yml from your config dir
-* file <NODE_CONFIG_DIR>/<NODE_ENV>.yml from your config dir
+* file <NODE_CONFIG_DIR>/default.yml
+* file <NODE_CONFIG_DIR>/<NODE_ENV>.yml
 * environment variables with passed prefix (or "APP_" by default)
 
 _NODE_CONFIG_DIR_ and _NODE_ENV_ are retrieved from env variables.
