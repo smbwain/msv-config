@@ -32,7 +32,7 @@ export function configFromEnv({
     varNamePrefix? : string,
     env?: ConfigEnv
 } = {}) : Config {
-    const data = {...this._data};
+    const data = {};
     for(let i in env) {
         const name = i.toUpperCase();
         if(name.startsWith(varNamePrefix)) {
