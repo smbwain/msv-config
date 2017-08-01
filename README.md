@@ -8,7 +8,7 @@ This library is a part of msv project.
 How to use
 ----------
 
-Config could be created from object
+Config could be created from object.
 
 ```js
 import {config} from 'msv-config';
@@ -18,7 +18,7 @@ const conf = config({
 });
 ```
 
-Config could be loaded from file
+Config could be loaded from file.
 
 ```yaml
 # conf.yaml
@@ -35,7 +35,7 @@ import {configFromFileSync} from 'msv-config';
 const conf = configFromFileSync('./conf.yaml');
 ```
 
-Config could be read with environment variables
+Config could be overwritten with environment variables.
 
 ```bash
 APP_DB_USER=root node myApp
@@ -49,7 +49,7 @@ const conf = configFromFileSync('./conf.yaml').merge(
 );
 ```
 
-You could read values from config
+You could read values from config.
 
 ```js
 conf.get('appName')
@@ -59,7 +59,7 @@ conf.get('appName')
 conf.get('appName', 'defaultValue')
 ```
 
-Configs could be nested
+Configs could be nested.
 
 ```js
 conf.get('db.user')
@@ -70,7 +70,8 @@ const dbConf = conf.sub('db');
 dbConf.get('user')
 ```
 
-To be compatible with environment variables, config variable names are case insensitive config values are always strings.
+To be compatible with environment variables, config variable names are case insensitive.
+Config values are always strings.
 
 So convert them yourself if needed.
 
