@@ -1,57 +1,62 @@
 
-import {ConfigInterface, ConfigData, ConfigRowData} from '../types';
+export interface ConfigRowData {
+    [name: string]: string | ConfigRowData;
+}
 
-export default class Config implements ConfigInterface {
+export interface ConfigData {
+    [name: string]: string;
+}
 
-    protected _data : ConfigData;
+export class Config {
+    protected data: ConfigData;
 
-    constructor({data = {}} : {data? : ConfigData} = {}) {
-        this._data = data;
+    constructor({data = {}}: {data?: ConfigData} = {}) {
+        this.data = data;
     }
 
-    merge(config : Config) : Config {
-        return new Config({data: {...this._data, ...config._data}});
+    public merge(config: Config): Config {
+        return new Config({data: {...this.data, ...config.data}});
     }
 
-    mergeObject(raw : ConfigRowData, { addPrefix = '' } : {addPrefix? : string} = {}) : Config {
-        const data = {...this._data};
-        function addRaw(raw, rawPrefix) {
-            if(typeof raw == 'object' && raw) {
-                for(const i in raw) {
-                    if(raw.hasOwnProperty(i)) {
-                        addRaw(raw[i], (rawPrefix ? rawPrefix+'.' : '')+i);
+    public mergeObject(raw: ConfigRowData, { addPrefix = '' }: {addPrefix?: string} = {}): Config {
+        const data = {...this.data};
+        function addRaw(subRaw, rawPrefix) {
+            if (typeof subRaw === 'object' && subRaw) {
+                for (const i in subRaw) {
+                    if (subRaw.hasOwnProperty(i)) {
+                        addRaw(subRaw[i], (rawPrefix ? rawPrefix + '.' : '') + i);
                     }
                 }
                 return;
             }
-            data[(addPrefix+rawPrefix).toUpperCase()] = raw;
+            data[(addPrefix + rawPrefix).toUpperCase()] = subRaw;
         }
         addRaw(raw, '');
         return new Config({data});
     }
 
-    get(confName : string, defaultValue? : string) : string {
+    public get(confName: string, defaultValue?: string): string {
         confName = confName.toUpperCase();
-        if(!(confName in this._data)) {
-            if(arguments.length >= 2) {
+        if (!(confName in this.data)) {
+            if (arguments.length >= 2) {
                 return defaultValue;
             }
             throw new Error(`No config "${confName}"`);
         }
 
-        return this._data[confName];
+        return this.data[confName];
     }
 
-    has(confName : string) : boolean {
-        return confName.toUpperCase() in this._data;
+    public has(confName: string): boolean {
+        return confName.toUpperCase() in this.data;
     }
 
-    sub(prefix : string) : Config {
-        prefix = prefix.toUpperCase()+'.';
+    public sub(prefix: string): Config {
+        prefix = prefix.toUpperCase() + '.';
         const data = {};
-        for(const i in this._data) {
-            if(this._data.hasOwnProperty(i) && i.startsWith(prefix)) {
-                data[i.slice(prefix.length)] = this._data[i];
+        for (const i in this.data) {
+            if (this.data.hasOwnProperty(i) && i.startsWith(prefix)) {
+                data[i.slice(prefix.length)] = this.data[i];
             }
         }
         return new Config({data});

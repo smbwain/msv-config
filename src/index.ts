@@ -1,14 +1,15 @@
 
-import Config from './config';
-import {ConfigRowData, ConfigEnv} from '../types';
+export * from './config';
 
-export function config(object? : ConfigRowData) : Config {
-    const config = new Config();
-    return object ? config.mergeObject(object) : config;
+import {Config, ConfigRowData} from './config';
+
+export function config(object?: ConfigRowData): Config {
+    const conf = new Config();
+    return object ? conf.mergeObject(object) : conf;
 }
 
-export function configFromString(str : string, type : string) : Config {
-    switch(type) {
+export function configFromString(str: string, type: 'json' | 'yaml' | 'yml'): Config {
+    switch (type) {
         case 'json':
             return config(JSON.parse(str));
         case 'yaml':
@@ -20,22 +21,25 @@ export function configFromString(str : string, type : string) : Config {
     }
 }
 
-export function configFromFileSync(filename : string, type? : string) : Config {
+export function configFromFileSync(filename: string, type?: 'json' | 'yaml' | 'yml'): Config {
     const fs = require('fs');
-    return configFromString(fs.readFileSync(filename), type || filename.match(/\.([a-z0-9]+)$/)[1]);
+    return configFromString(
+        fs.readFileSync(filename),
+        type || (filename.match(/\.([a-z0-9]+)$/)[1] as 'json' | 'yaml' | 'yml'),
+    );
 }
 
 export function configFromEnv({
     varNamePrefix = 'APP_',
-    env = process.env
-} : {
-    varNamePrefix? : string,
-    env?: ConfigEnv
-} = {}) : Config {
+    env = process.env,
+}: {
+    varNamePrefix?: string;
+    env?: NodeJS.ProcessEnv;
+} = {}): Config {
     const data = {};
-    for(let i in env) {
+    for (const i of Object.keys(env)) {
         const name = i.toUpperCase();
-        if(name.startsWith(varNamePrefix)) {
+        if (name.startsWith(varNamePrefix)) {
             data[name.slice(varNamePrefix.length).replace(/_/g, '.')] = env[i];
         }
     }
@@ -44,11 +48,11 @@ export function configFromEnv({
 
 export function basicConfig({
     envVarNamePrefix = 'APP_',
-    env = process.env
-} : {
-    envVarNamePrefix? : string,
-    env? : ConfigEnv
-} = {}) : Config {
+    env = process.env,
+}: {
+    envVarNamePrefix?: string;
+    env?: NodeJS.ProcessEnv;
+} = {}): Config {
     const {join} = require('path');
     const NODE_ENV = env.NODE_ENV || 'development';
     const NODE_CONFIG_DIR = env.NODE_CONFIG_DIR || join(process.cwd(), 'config');

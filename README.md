@@ -1,14 +1,12 @@
 msv-config
 ==========
 
-This module implements simple config container for configuration which could be read from file, environment variables or somewhere else.
-
-This library is a part of msv project.
+This library implements simple config container for configurations which can be read from file, environment variables or somewhere else.
 
 How to use
 ----------
 
-Config could be created from object.
+Create config from object.
 
 ```js
 import {config} from 'msv-config';
@@ -18,7 +16,7 @@ const conf = config({
 });
 ```
 
-Config could be loaded from file.
+Load config from file.
 
 ```yaml
 # conf.yaml
@@ -29,13 +27,12 @@ db:
 ```
 
 ```js
-// myApp.js
 import {configFromFileSync} from 'msv-config';
 
 const conf = configFromFileSync('./conf.yaml');
 ```
 
-Config could be overwritten with environment variables.
+Overwrite config with environment variables.
 
 ```bash
 APP_DB_USER=root node myApp
@@ -49,7 +46,7 @@ const conf = configFromFileSync('./conf.yaml').merge(
 );
 ```
 
-You could read values from config.
+Get config value.
 
 ```js
 conf.get('appName')
@@ -59,7 +56,7 @@ conf.get('appName')
 conf.get('appName', 'defaultValue')
 ```
 
-Configs could be nested.
+Nested configs.
 
 ```js
 conf.get('db.user')
@@ -67,7 +64,7 @@ conf.get('db.user')
 // or
 
 const dbConf = conf.sub('db');
-dbConf.get('user')
+dbConf.get('user');
 ```
 
 To be compatible with environment variables, config variable names are case insensitive.
@@ -81,7 +78,7 @@ server.listen(
 );
 ```
 
-As you could see few snippets ago, configs could be merged
+Merge configs.
 
 ```js
 // between each other
@@ -96,53 +93,53 @@ const oneMoreConf = conf.mergeObject({
 
 ```
 
-Configs are immutable, so calling merge/mergeObject returns new config instance and doesn't affect original config.
+Configs are immutable, so merge/mergeObject returns new config instance and doesn't affect original config.
  
 API
 ---
 
 ### Exported methods:
 
-#### config(object? : ConfigRowData) : Config
+#### config(object?: ConfigRowData): Config
 
 ```
-type ConfigRowData = {
-    [name : string] : string | ConfigRowData
+interface ConfigRowData {
+    [name: string]: string | ConfigRowData;
 }
 ```
 
 Create new config object.
 
 
-#### configFromString(str : string, type : string) : Config
+#### configFromString(str: string, type: 'json' | 'yaml' | 'yml'): Config
 
-Load config from string. At the moment _type_ could be: json or yaml.
+Load config from string.
 
 
-#### configFromFileSync(filename : string, type? : string) : Config
+#### configFromFileSync(filename: string, type?: 'json' | 'yaml' | 'yml'): Config
 
 Load config from file (synchronously! which should be ok, as you read your config once on the app start).
 
-At the moment, _type_ could be: json or yaml. If _type_ isn't passed, it tries to get type from file extension.
+If _type_ isn't passed, it tries to extract type from file extension.
 
 
-#### configFromEnv(options?)
+#### configFromEnv(options?): Config
 
 ```
 configFromEnv({
   varNamePrefix = 'app',
-  env = process.env
-} : {
-  varNamePrefix? : string,
-  env? : {[envKey : string] : string}
-}) : Config;
+  env = process.env,
+}: {
+  varNamePrefix?: string;
+  env?: NodeJS.ProcessEnv;
+}): Config;
 ```
 
 Read config from environment variables.
 
 _varNamePrefix_ is prefix which used with your env variables names. By default it's "APP_".
 
-You could also pass your source instead of node's process.env, if needed.
+You can pass your source instead of node's process.env, if needed.
  
 So, if you want to have config:
 ```json
@@ -154,22 +151,22 @@ So, if you want to have config:
 }
 ```
 
-You could set in your envs:
+You can set in your envs:
 ```
 APP_APPNAME=myApp
 APP_DB_HOST=127.0.0.1
 ```
 
 
-#### basicConfig(options?)
+#### basicConfig(options?): Config
 
 ```
-configFromEnv({
+basicConfig({
   varNamePrefix = 'app',
-  env = process.env
-} : {
-  varNamePrefix? : string,
-  env? : {[envKey : string] : string}
+  env = process.env,
+}: {
+  varNamePrefix?: string;
+  env?: NodeJS.ProcessEnv;
 }) : Config;
 ```
 
@@ -177,12 +174,12 @@ Create config by merging:
 
 * file <NODE_CONFIG_DIR>/default.yml
 * file <NODE_CONFIG_DIR>/<NODE_ENV>.yml
-* environment variables with passed prefix (or "APP_" by default)
+* environment variables with passed prefix ("APP_" by default)
 
 _NODE_CONFIG_DIR_ and _NODE_ENV_ are retrieved from env variables.
 By default NODE_CONFIG_DIR={cwd}/config and NODE_ENV=development
 
-#### config.get(confName : string, defaultValue? : string) : string;
+#### config.get(confName: string, defaultValue?: string): string;
 
 Get config with given name.
 If there no config and no defaultValue passed, error will be thrown.
@@ -204,13 +201,13 @@ conf.get('prjName', 'noName') // 'noName'
 conf.get('prjName') // throws Error
 ```
 
-#### config.has(confName : string) : boolean;
+#### config.has(confName: string): boolean;
 
 Check if there is config with given name.
 
-#### config.sub(prefix : string) : Config;
+#### config.sub(prefix: string): Config;
 
-Returns sub config.
+Return sub config.
 
 ```yaml
 # conf.yaml
@@ -228,9 +225,9 @@ dbConfig.get('host') // 127.0.0.1
 dbConfig.get('host') // me
 ```
 
-#### config.merge(config : Config) : Config;
+#### config.merge(config: Config): Config;
 
-Merge one config with another and return result.
+Merge one config with another and return merged config.
 
 ```yaml
 # conf.yaml
@@ -249,7 +246,7 @@ APP_DB_USER=root node myApp
 import {configFromFileSync, configFromEnv} from 'msv-config';
 
 const conf = configFromFileSync('./conf.yaml').merge(
-    configFromEnv()
+    configFromEnv(),
 );
 
 conf.get('appName'); // 'newApp'
@@ -257,15 +254,15 @@ conf.get('db.host'); // '127.0.0.1'
 conf.get('db.user'); // 'root'
 ```
 
-#### config.mergeObject(raw : ConfigRowData, options? : {addPrefix? : string}) : Config;
+#### config.mergeObject(raw: ConfigRowData, options?: {addPrefix? : string}): Config;
  
 ```
 type ConfigRowData = {
-    [name: string]: string | ConfigRowData
+    [name: string]: string | ConfigRowData;
 }
 ```
 
-Merge config with object and return result.
+Merge config with object and return merged config.
 
 ```yaml
 # conf.yaml

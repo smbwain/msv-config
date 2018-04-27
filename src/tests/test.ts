@@ -1,15 +1,15 @@
-import {config, ConfigInterface, configFromEnv} from '../..';
 import * as assert from 'assert';
+import { config, Config, configFromEnv } from '../index';
 
-describe('msv-config', function () {
-    let conf : ConfigInterface;
+describe('msv-config', () => {
+    let conf: Config;
 
     it('should init from object and read', () => {
         conf = config({
             appName: 'myApp',
             db: {
-                user: 'root'
-            }
+                user: 'root',
+            },
         });
     });
 
@@ -19,17 +19,17 @@ describe('msv-config', function () {
                 env: {
                     APP_DB_USER: 'someUser',
                     APP_DB_PASSWORD: 'somePassword',
-                    APP_AAA_BBB: 'ccc'
-                }
-            })
+                    APP_AAA_BBB: 'ccc',
+                },
+            }),
         );
     });
 
     it('should merge object', () => {
         conf = conf.mergeObject({
             uuu: {
-                a: '5'
-            }
+                a: '5',
+            },
         });
     });
 
@@ -56,4 +56,3 @@ describe('msv-config', function () {
         assert.equal(conf.get('uuu.a'), '5');
     });
 });
-
